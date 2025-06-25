@@ -8,7 +8,7 @@ public class TaskRepository : ITaskRepository
 {
     private readonly AppDbContext _context;
 
-    private TaskRepository(AppDbContext context)
+    public TaskRepository(AppDbContext context)
     {
         _context = context;
     }
@@ -46,4 +46,27 @@ public class TaskRepository : ITaskRepository
     {
         await _context.SaveChangesAsync();
     }
+    
+    public async Task<List<TaskItem>> GetFilteredAsync(string? search, bool? isCompleted, string? sortField, bool descending)
+    {
+        var query = _context.TaskItems.Include(t => t.SubTasks).AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(search))
+            query = query.Where(t =>
+                t.Title.Contains(search) || (t.Description != null && t.Description.Contains(search)));
+
+        if (isCompleted.HasValue)
+            query = query.Where(t => t.IsCompleted == isCompleted.Value);
+
+        query = sortField?.ToLower() switch
+        {
+            "duedate" => descending ? query.OrderByDescending(t => t.DueDate) : query.OrderBy(t => t.DueDate),
+            "createdat" => descending ? query.OrderByDescending(t => t.CreatedAt) : query.OrderBy(t => t.CreatedAt),
+            "title" => descending ? query.OrderByDescending(t => t.Title) : query.OrderBy(t => t.Title),
+            _ => query.OrderBy(t => t.CreatedAt)
+        };
+
+        return await query.ToListAsync();
+    }
+
 }

@@ -10,4 +10,6 @@ public interface ITaskRepository
     Task UpdateAsync(TaskItem task);
     Task DeleteAsync(TaskItem task);
     Task SaveChangesAsync();
+    Task<List<TaskItem>> GetFilteredAsync(string? search, bool? isCompleted, string? sortField, bool descending);
+
 }

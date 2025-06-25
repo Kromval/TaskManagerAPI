@@ -54,4 +54,11 @@ public class TaskService : ITaskService
         await _repo.SaveChangesAsync();
         return true;
     }
+    
+    public async Task<List<TaskViewDto>> GetFilteredAsync(string? search, bool? isCompleted, string? sortField, bool descending)
+    {
+        var tasks = await _repo.GetFilteredAsync(search, isCompleted, sortField, descending);
+        return tasks.Select(TaskMapper.ToTaskViewDto).ToList();
+    }
+
 }

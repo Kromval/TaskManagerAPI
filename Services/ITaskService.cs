@@ -9,4 +9,6 @@ public interface ITaskService
     Task<TaskViewDto> CreateAsync(CreateTaskDto dto);
     Task<bool> UpdateAsync(Guid id ,UpdateTaskDto dto);
     Task<bool> DeleteAsync(Guid id);
+    Task<List<TaskViewDto>> GetFilteredAsync(string? search, bool? isCompleted, string? sortField, bool descending);
+
 }
