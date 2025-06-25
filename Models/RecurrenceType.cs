@@ -1,6 +1,10 @@
 ﻿namespace TaskManager.Models;
 
-public class RecurrenceType
+public enum RecurrenceType
 {
-    
+    None,
+    Daily,
+    Weekly,
+    Monthly,
+    Yearly
 }
